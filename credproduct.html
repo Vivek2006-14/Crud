@@ -1,0 +1,115 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>User Info CRED</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+    }
+    h2 {
+      color: #333;
+    }
+    input {
+      margin: 5px;
+      padding: 8px;
+      width: 200px;
+    }
+    button {
+      margin: 5px;
+      padding: 8px 12px;
+    }
+    table {
+      margin-top: 20px;
+      border-collapse: collapse;
+      width: 100%;
+    }
+    th, td {
+      border: 1px solid #ccc;
+      padding: 8px;
+      text-align: left;
+    }
+    th {
+      background-color: white;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>Products Information</h2>
+
+  <form id="userForm">
+    <input type="text" id="name" placeholder="Enter the product name" required>
+    <input type="text" id="email" placeholder="Enter the price" required>
+    <button type="submit">ADD USER</button>
+  </form>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Product</th>
+        <th>Price</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody id="userTableBody"></tbody>
+  </table>
+
+  <script>
+    const userForm = document.getElementById('userForm');
+    const nameInput = document.getElementById('name');
+    const emailInput = document.getElementById('email');
+    const userTableBody = document.getElementById('userTableBody');
+
+    let users = [];
+    let editIndex = null;
+
+    userForm.addEventListener('submit', function (e) {
+      e.preventDefault();
+
+      const name = nameInput.value.trim();
+      const email = emailInput.value.trim();
+
+      if (editIndex === null) {
+        users.push({ name, email });
+      } else {
+        users[editIndex] = { name, email };
+        editIndex = null;
+      }
+
+      userForm.reset();
+      renderTable();
+    });
+
+    function renderTable() {
+      userTableBody.innerHTML = '';
+      users.forEach((user, index) => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td>${user.name}</td>
+          <td>${user.email}</td>
+          <td>
+            <button onclick="editUser(${index})">Edit</button>
+            <button onclick="deleteUser(${index})">Delete</button>
+          </td>
+        `;
+        userTableBody.appendChild(row);
+      });
+    }
+
+    window.editUser = function (index) {
+      const user = users[index];
+      nameInput.value = user.name;
+      emailInput.value = user.email;
+      editIndex = index;
+    };
+
+    window.deleteUser = function (index) {
+      users.splice(index, 1);
+      renderTable();
+    };
+  </script>
+
+</body>
+</html>
